@@ -1,5 +1,5 @@
 <h1>Smart Depart - умное деление</h1>
-Это CPG-аддон для CorelDraw для разбиения или объединения кривых с учётом их вложенности - аналог <a href=http://www.e-cut.ru/index.php?view=function&functionid=15>функции "умное деление" из пакета ECut</a>.<p><p><img src=Readme\1.svg>
+Это CPG-аддон к CorelDraw для разбиения или объединения кривых с учётом их вложенности - аналог <a href=http://www.e-cut.ru/index.php?view=function&functionid=15>функции "умное деление" из пакета ECut</a>.<p><p><img src=Readme\1.svg>
 <h1>Системные требования</h1>
 <table  style="font-size:100%"><tr><td>Операционная система:<td>Windows 7 или выше
 <tr><td>Программное обеспечение:<td>Corel Draw версии 17.3 или выше (на версиях ниже 17.3 не будет сохраняться стиль кривой)
