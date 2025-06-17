@@ -9,3 +9,4 @@
 <li>Распаковать архив для соответствующей архитектуры (<a href=https://github.com/fersatgit/SmartDepart/releases/download/v1.1/SmartDepart_x86.7z>x86</a> или <a href=https://github.com/fersatgit/SmartDepart/releases/download/v1.1/SmartDepart_x64.7z>x64</a>) в каталог "programs\addons" или "programs64\addons" соответственно.
 <li>После запуска CorelDraw в контекстном меню панели свойств выбрать пункт меню "Настройка->Панель инструментов Панель свойств->Настройка по умолчанию"
 <p><img src=Readme\1.gif></ol>
+Демонстрация работы функции "Резка струной"<p><img src=Readme\2.gif>
