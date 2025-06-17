@@ -1,1 +1,6 @@
-<?xml version="1.0"?><config><resources><resource name="SmartDepart" path="SmartDepart.cpg"><resourceMap><resEntry id="SmartDepart" icon="1"/></resourceMap></resource></resources></config>
+<?xml version="1.0"?><config><resources>
+<resource name="SmartDepart_1" path="SmartDepart.cpg"><resourceMap><resEntry id="SmartDepart_1" icon="1"/></resourceMap></resource>
+<resource name="SmartDepart_2" path="SmartDepart.cpg"><resourceMap><resEntry id="SmartDepart_2" icon="2"/></resourceMap></resource>
+<resource name="SmartDepart_3" path="SmartDepart.cpg"><resourceMap><resEntry id="SmartDepart_3" icon="3"/></resourceMap></resource>
+<resource name="SmartDepart_4" path="SmartDepart.cpg"><resourceMap><resEntry id="SmartDepart_4" icon="4"/></resourceMap></resource>
+</resources></config>

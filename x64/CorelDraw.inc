@@ -1,20 +1,59 @@
-cdrTenthMicron = $00;
-cdrInch        = $01;
-cdrFoot        = $02;
-cdrMillimeter  = $03;
-cdrCentimeter  = $04;
-cdrPixel       = $05;
-cdrMile        = $06;
-cdrMeter       = $07;
-cdrKilometer   = $08;
-cdrDidots      = $09;
-cdrAgate       = $0A;
-cdrYard        = $0B;
-cdrPica        = $0C;
-cdrCicero      = $0D;
-cdrPoint       = $0E;
-cdrUnitQ       = $0F;
-cdrUnitH       = $10;
+cdrTenthMicron = $00
+cdrInch        = $01
+cdrFoot        = $02
+cdrMillimeter  = $03
+cdrCentimeter  = $04
+cdrPixel       = $05
+cdrMile        = $06
+cdrMeter       = $07
+cdrKilometer   = $08
+cdrDidots      = $09
+cdrAgate       = $0A
+cdrYard        = $0B
+cdrPica        = $0C
+cdrCicero      = $0D
+cdrPoint       = $0E
+cdrUnitQ       = $0F
+cdrUnitH       = $10
+
+cdrTopRight    = 1
+cdrTopMiddle   = 2
+cdrTopLeft     = 3
+cdrMiddleLeft  = 4
+cdrBottomLeft  = 5
+cdrBottomMiddle= 6
+cdrBottomRight = 7
+cdrMiddleRight = 8
+cdrCenter      = 9
+
+cdrNoShape                 = $00
+cdrRectangleShape          = $01
+cdrEllipseShape            = $02
+cdrCurveShape              = $03
+cdrPolygonShape            = $04
+cdrBitmapShape             = $05
+cdrTextShape               = $06
+cdrGroupShape              = $07
+cdrSelectionShape          = $08
+cdrGuidelineShape          = $09
+cdrBlendGroupShape         = $0A
+cdrExtrudeGroupShape       = $0B
+cdrOLEObjectShape          = $0C
+cdrContourGroupShape       = $0D
+cdrLinearDimensionShape    = $0E
+cdrBevelGroupShape         = $0F
+cdrDropShadowGroupShape    = $10
+cdr3DObjectShape           = $11
+cdrArtisticMediaGroupShape = $12
+cdrConnectorShape          = $13
+cdrMeshFillShape           = $14
+cdrCustomShape             = $15
+cdrCustomEffectGroupShape  = $16
+cdrSymbolShape             = $17
+cdrHTMLFormObjectShape     = $18
+cdrHTMLActiveObjectShape   = $19
+cdrPerfectShape            = $1A
+cdrEPSShape                = $1B
 
 VT_EMPTY           = 0;   { [V]   [P]  nothing                     }
 VT_NULL            = 1;   { [V]        SQL style Null              }
@@ -64,6 +103,89 @@ VT_ILLEGAL         = $ffff;
 VT_ILLEGALMASKED   = $0fff;
 VT_TYPEMASK        = $0fff;
 
+E_NOTIMPL=80004001h
+E_FAIL   =80004005h
+
+VAR_PERINSTANCE        = 0
+VAR_STATIC             = 1
+VAR_CONST              = 2
+VAR_DISPATCH           = 3
+DESCKIND_NONE          = 0
+DESCKIND_FUNCDESC      = 1
+DESCKIND_VARDESC       = 2
+DESCKIND_TYPECOMP      = 3
+INVOKE_FUNC            = 1
+INVOKE_PROPERTYGET     = 2
+INVOKE_PROPERTYPUT     = 4
+CC_STDCALL             = 5
+FUNC_DISPATCH          = 4
+
+cdrElementStart    = 0
+cdrElementLine     = 1
+cdrElementCurve    = 2
+cdrElementControl  = 3
+
+cdrCuspNode        = 0
+cdrSmoothNode      = 1
+cdrSymmetricalNode = 2
+cdrMixedNodes      = 3
+
+cdrFlagSelected    = 1
+cdrFlagUser        = 4
+cdrFlagClosed      = 8
+cdrFlagValid       = 80h
+
+struct VARIANT
+  type rq 1
+  data rq 1
+       rq 1
+ends
+
+struct IDLDESC
+  dwReserved rq 1
+  wIDLFlags  rq 1
+ends
+
+struct PARAMDESCEX
+  cBytes          rq 1
+  varDefaultValue VARIANT
+ends
+
+struct PARAMDESC
+  pparamdescex rq 1
+  wParamFlags  rq 1
+ends
+
+struct TYPEDESC
+  ptdesc rq 1
+  vt     rq 1
+ends
+
+struct ELEMDESC
+  tdesc TYPEDESC
+  union
+    idldesc   IDLDESC
+    paramdesc PARAMDESC
+  ends
+ends
+
+struct FUNCDESC
+  memid             rq 1
+  lprgscode         rq 1
+  lprgelemdescParam rq 1
+  funckind          rd 1
+  invkind           rd 1
+  callconv          rd 1
+  cParams           rw 1
+  cParamsOpt        rw 1
+  oVft              rw 1
+  cScodes           rw 1
+                    rd 1
+  elemdescFunc      ELEMDESC
+  wFuncFlags        rw 1
+                    rb 6
+ends
+
 struct CurveElement
   PositionX   rq 1
   PositionY   rq 1
@@ -71,12 +193,6 @@ struct CurveElement
   NodeType    rd 1 ;cdrNodeType
   Flags       rb 1
   align       rb 7
-ends
-
-struct VARIANT
-  type rq 1
-  data rq 1
-       rq 1
 ends
 
 struct DISPPARAMS
@@ -285,6 +401,74 @@ interface IVGSubPaths,\
   Get_First,\          ;: IVGSubPath; safecall;
   Get_Last             ;: IVGSubPath; safecall;
 
+interface IVGSubPath,\
+  QueryInterface,\
+  AddRef,\
+  Release,\
+  GetTypeInfoCount,\
+  GetTypeInfo,\
+  GetIDsOfNames,\
+  Invoke,\
+  Get_Application,\                 ;: IVGApplication; safecall;
+  Get_Parent,\                      ;: IVGCurve; safecall;
+  Get_Nodes,\                       ;: IVGNodes; safecall;
+  Get_Segments,\                    ;: IVGSegments; safecall;
+  Get_Index,\                       ;: Integer; safecall;
+  Get_Length,\                      ;: Double; safecall;
+  Get_Closed,\                      ;: WordBool; safecall;
+  Set_Closed,\                      ;(pVal: WordBool); safecall;
+  Get_PositionX,\                   ;: Double; safecall;
+  Set_PositionX,\                   ;(pVal: Double); safecall;
+  Get_PositionY,\                   ;: Double; safecall;
+  Set_PositionY,\                   ;(pVal: Double); safecall;
+  Get_SizeWidth,\                   ;: Double; safecall;
+  Get_SizeHeight,\                  ;: Double; safecall;
+  Selection,\                       ;: IVGNodeRange; safecall;
+  ReverseDirection,\                ;; safecall;
+  Extract,\                         ;(out OldCurve: IVGShape): IVGShape; safecall;
+  Delete,\                          ;; safecall;
+  GetPosition,\                     ;(out PositionX: Double; out PositionY: Double); safecall;
+  SetPosition,\                     ;(PositionX: Double; PositionY: Double); safecall;
+  Move,\                            ;(DeltaX: Double; DeltaY: Double); safecall;
+  IsOnSubPath,\                     ;(x: Double; y: Double; HotArea: Double): cdrPositionOfPointOverShape; safecall;
+  AppendLineSegment,\               ;(x: Double; y: Double; AppendAtBeginning: WordBool): IVGSegment; safecall;
+  AppendCurveSegment,\              ;(x: Double; y: Double; StartingControlPointLength: Double; StartingControlPointAngle: Double; EndingControlPointLength: Double; EndingControlPointAngle: Double; AppendAtBeginning: WordBool): IVGSegment; safecall;
+  GetPointPositionAt,\              ;(out x: Double; out y: Double; Offset: Double; OffsetType: cdrSegmentOffsetType); safecall;
+  BreakApartAt,\                    ;(Offset: Double; OffsetType: cdrSegmentOffsetType): IVGNode; safecall;
+  AddNodeAt,\                       ;(Offset: Double; OffsetType: cdrSegmentOffsetType): IVGNode; safecall;
+  GetPerpendicularAt,\              ;(Offset: Double; OffsetType: cdrSegmentOffsetType): Double; safecall;
+  GetTangentAt,\                    ;(Offset: Double; OffsetType: cdrSegmentOffsetType): Double; safecall;
+  GetIntersections,\                ;(const Target: IVGSubPath; OffsetType: cdrSegmentOffsetType): IVGCrossPoints; safecall;
+  GetSegmentAt,\                    ;(Offset: Double; OffsetType: cdrSegmentOffsetType; out SegmentOffset: Double): IVGSegment; safecall;
+  Next,\                            ;: IVGSubPath; safecall;
+  Previous,\                        ;: IVGSubPath; safecall;
+  GetCurvatureAt,\                  ;(Offset: Double; OffsetType: cdrSegmentOffsetType): Double; safecall;
+  GetCurveSpeedAt,\                 ;(Offset: Double; OffsetType: cdrSegmentOffsetType): Double; safecall;
+  Get_StartNode,\                   ;: IVGNode; safecall;
+  Get_EndNode,\                     ;: IVGNode; safecall;
+  FindSegmentOffset,\               ;(AbsoluteOffset: Double; out Segment: IVGSegment; out ParamOffset: Double; out Remainder: Double): WordBool; safecall;
+  Get_FirstSegment,\                ;: IVGSegment; safecall;
+  Get_LastSegment,\                 ;: IVGSegment; safecall;
+  AppendCurveSegment2,\             ;(x: Double; y: Double; StartingControlPointX: Double; StartingControlPointY: Double; EndingControlPointX: Double; EndingControlPointY: Double; AppendAtBeginning: WordBool): IVGSegment; safecall;
+  GetCopy,\                         ;: IVGCurve; safecall;
+  GetCurveInfo,\                    ;: PSafeArray; safecall;
+  PutCurveInfo,\                    ;(var Source: PSafeArray; NumElements: Integer): Integer; safecall;
+  GetPolyline,\                     ;(CurvePrecision: Integer): IVGCurve; safecall;
+  IsPointInside,\                   ;(x: Double; y: Double): WordBool; safecall;
+  IsRectOnEdge,\                    ;(x1: Double; y1: Double; x2: Double; y2: Double): WordBool; safecall;
+  FindClosestSegment,\              ;(x: Double; y: Double; out ParamOffset: Double): IVGSegment; safecall;
+  FindNodeAtPoint,\                 ;(x: Double; y: Double; HotArea: Double): IVGNode; safecall;
+  FindSegmentAtPoint,\              ;(x: Double; y: Double; out ParamOffset: Double; HotArea: Double): IVGSegment; safecall;
+  Get_IsClockwise,\                 ;: WordBool; safecall;
+  Get_Area,\                        ;: Double; safecall;
+  GetBoundingBox,\                  ;(out x: Double; out y: Double; out Width: Double; out Height: Double): WordBool; safecall;
+  Get_BoundingBox,\                 ;: IVGRect; safecall;
+  EqualDivide,\                     ;(Divisions: Integer; Gap: Double); safecall;
+  GetEvenlySpacedPoints,\           ;(DistanceBetweenPointsAlongCurve: Double; ScaleDistanceToFit: WordBool): IVGPointRange; safecall;
+  GetPerpendicularVectorAt,\        ;(Offset: Double; OffsetType: cdrSegmentOffsetType; Normalize: WordBool): IVGVector; safecall;
+  GetTangentVectorAt,\              ;(Offset: Double; OffsetType: cdrSegmentOffsetType; Normalize: WordBool): IVGVector; safecall;
+  GetPointAt                        ;(Offset: Double; OffsetType: cdrSegmentOffsetType): IVGPoint; safecall;
+
 interface IVGCurve,\
   QueryInterface,\
   AddRef,\
@@ -339,6 +523,50 @@ interface IVGCurve,\
   SelfWeldClosedSubpaths,\                       ;; safecall;
   AppendSubpathEllipse,\                         ;(CenterX: Double; CenterY: Double; RadiusH: Double; RadiusV: Double); safecall;
   WeldEx                                         ;(const TargetCurve: IVGCurve; Method: cdrWeldMethod; WindingSource: WordBool; WindingTarget: WordBool; Flags: Integer): IVGCurve; safecall;
+
+interface IVGBitmap,\
+  QueryInterface,\
+  AddRef,\
+  Release,\
+  GetTypeInfoCount,\
+  GetTypeInfo,\
+  GetIDsOfNames,\
+  Invoke,\
+  Get_SizeWidth,\                                ;: Integer; safecall;
+  Get_SizeHeight,\                               ;: Integer; safecall;
+  Get_ResolutionX,\                              ;: Integer; safecall;
+  Get_ResolutionY,\                              ;: Integer; safecall;
+  Get_ExternallyLinked,\                         ;: WordBool; safecall;
+  ResolveLink,\                                  ;; safecall;
+  UpdateLink,\                                   ;; safecall;
+  Inflate,\                                      ;(Width: Integer; Height: Integer); safecall;
+  Get_LinkFileName,\                             ;: WideString; safecall;
+  Get_Mode,\                                     ;: cdrImageType; safecall;
+  SaveAs,\                                       ;(const FileName: WideString; Filter: cdrFilter; Compression: cdrCompressionType): ICorelExportFilter; safecall;
+  Resample,\                                     ;(Width: Integer; Height: Integer; AntiAlias: WordBool; ResolutionX: Double; ResolutionY: Double); safecall;
+  ConvertTo,\                                    ;(Mode: cdrImageType); safecall;
+  ApplyBitmapEffect,\                            ;(const UndoString: WideString; const Command: WideString); safecall;
+  Crop,\                                         ;; safecall;
+  Get_Transparent,\                              ;: WordBool; safecall;
+  Get_Watermarked,\                              ;: WordBool; safecall;
+  Get_OPILinked,\                                ;: WordBool; safecall;
+  Get_IsEPS,\                                    ;: WordBool; safecall;
+  Get_ExternalLinkTime,\                         ;: TDateTime; safecall;
+  ConvertToPaletted,\                            ;(PaletteType: cdrImagePaletteType; DitherType: cdrDitherType; DitherIntensity: Integer; Smoothing: Integer; NumColors: Integer; ColorSensitive: WordBool; TargetColor: Integer; Importance: Integer; Lightness: Integer; ToleranceA: Integer; ToleranceB: Integer; var Palette: OleVariant); safecall;
+  ConvertToPaletted2,\                           ;(const Options: IVGStructPaletteOptions); safecall;
+  ConvertToBW,\                                  ;(RenderType: cdrRenderType; Intensity: Integer; Threshold: Integer; Halftone: cdrHalftoneType; HalftoneAngle: Integer; HalftoneSize: Integer); safecall;
+  ResetCropEnvelope,\                            ;; safecall;
+  Get_Embedded,\                                 ;: WordBool; safecall;
+  Get_Cropped,\                                  ;: WordBool; safecall;
+  Get_CropEnvelopeModified,\                     ;: WordBool; safecall;
+  Get_CropEnvelope,\                             ;: IVGCurve; safecall;
+  Get_BoundingBoxPath,\                          ;: IVGCurve; safecall;
+  ConvertToDuotone,\                             ;(const Duotone: IVGDuotone); safecall;
+  Get_Duotone,\                                  ;: IVGDuotone; safecall;
+  Set_LinkFileName,\                             ;(const pVal: WideString); safecall;
+  Trace,\                                        ;(TraceType: cdrTraceType; Smoothing: Smallint; DetailLevelPercent: Smallint; ColorMode: cdrColorType; PaletteID: cdrPaletteID; ColorCount: Integer; DeleteOriginalObject: WordBool; RemoveBackground: WordBool; RemoveEntireBackColor: WordBool): IVGTraceSettings; safecall; function Get_Image: IVGImage; safecall;
+  Get_ImageAlpha,\                               ;: IVGImage; safecall;
+  SetImageData                                   ;(const Image: IVGImage; const Alpha: IVGImage; OffsetX: Integer; OffsetY: Integer); safecall;
 
 interface IVGShape,\
   QueryInterface,\
@@ -744,6 +972,47 @@ interface IVGShapeRange,\
   ModifyToolShapeProperties,\        ;(const ShapePropertiesToModify: IVGProperties); safecall;
   CreateParallelCurves               ;(Count: Integer; distanceBetweenCurves: Double): IVGShapeRange; safecall;
 
+interface IVGWindow,\
+  QueryInterface,\
+  AddRef,\
+  Release,\
+  GetTypeInfoCount,\
+  GetTypeInfo,\
+  GetIDsOfNames,\
+  Invoke,\
+  Get_Application,\                   ;: IDispatch; safecall;
+  Get_Parent,\                        ;: IVGWindows; safecall;
+  Activate,\                          ; safecall;
+  Close,\                             ; safecall;
+  Get_FullScreen,\                    ;: WordBool; safecall;
+  Set_FullScreen,\                    ;(FullScreen: WordBool); safecall;
+  Get_Page,\                          ;: IDispatch; safecall;
+  Get_Active,\                        ;: WordBool; safecall;
+  Get_Caption,\                       ;: WideString; safecall;
+  Get_Height,\                        ;: Integer; safecall;
+  Set_Height,\                        ;(pVal: Integer); safecall;
+  Get_Width,\                         ;: Integer; safecall;
+  Set_Width,\                         ;(pVal: Integer); safecall;
+  Get_Left,\                          ;: Integer; safecall;
+  Set_Left,\                          ;(pVal: Integer); safecall;
+  Get_Top,\                           ;: Integer; safecall;
+  Set_Top,\                           ;(pVal: Integer); safecall;
+  Get_WindowState,\                   ;: cdrWindowState; safecall;
+  Set_WindowState,\                   ;(pVal: cdrWindowState); safecall;
+  Get_Previous,\                      ;: IVGWindow; safecall;
+  Get_Next,\                          ;: IVGWindow; safecall;
+  Get_Index,\                         ;: Integer; safecall;
+  NewWindow,\                         ;: IVGWindow; safecall;
+  Refresh,\                           ; safecall;
+  Get_Document,\                      ;: IVGDocument; safecall;
+  Get_ActiveView,\                    ;: IVGActiveView; safecall;
+  ScreenToDocument,\                  ;(XScreen: Integer; YScreen: Integer; out XDoc: Double; out YDoc: Double); safecall;
+  DocumentToScreen,\                  ;(XDoc: Double; YDoc: Double; out XScreen: Integer; out YScreen: Integer); safecall;
+  Get_Handle,\                        ;: Integer; safecall;
+  Get_ViewWindow,\                    ;: ICUIViewWindow; safecall;
+  ScreenDistanceToDocumentDistance,\  ;(ScreenDistance: Double): Double; safecall;
+  DocumentDistanceToScreenDistance    ;(DocumentDistance: Double): Double; safecall;
+
 interface IVGDocument,\
   QueryInterface,\
   AddRef,\
@@ -1090,6 +1359,64 @@ interface IVGStyle,\
   GetCopy,\                                ;: IVGStyle; safecall;
   Get_Transparency                         ;: IVGStyleTransparency; safecall;
 
+interface IVGOutline,\
+  QueryInterface,\
+  AddRef,\
+  Release,\
+  GetTypeInfoCount,\
+  GetTypeInfo,\
+  GetIDsOfNames,\
+  Invoke,\
+  Get_Width,\                              ;: Double; safecall;
+  Set_Width,\                              ;(pVal: Double); safecall;
+  Get_Color,\                              ;: IVGColor; safecall;
+  Set_Color,\                              ;(const ppVal: IVGColor); safecall;
+  ConvertToObject,\                        ;: IVGShape; safecall;
+  Get_type,\                               ;: cdrOutlineType; safecall;
+  Set_type,\                               ;(Type_: cdrOutlineType); safecall;
+  Get_Style,\                              ;: IVGOutlineStyle; safecall;
+  Set_Style,\                              ;(const ppStyle: IVGOutlineStyle); safecall;
+  Get_StartArrow,\                         ;: IVGArrowHead; safecall;
+  Set_StartArrow,\                         ;(const ppArrowHead: IVGArrowHead); safecall;
+  Get_EndArrow,\                           ;: IVGArrowHead; safecall;
+  Set_EndArrow,\                           ;(const ppArrowHead: IVGArrowHead); safecall;
+  Get_NibStretch,\                         ;: Integer; safecall;
+  Set_NibStretch,\                         ;(pVal: Integer); safecall;
+  Get_NibAngle,\                           ;: Double; safecall;
+  Set_NibAngle,\                           ;(pVal: Double); safecall;
+  Get_BehindFill,\                         ;: WordBool; safecall;
+  Set_BehindFill,\                         ;(pVal: WordBool); safecall;
+  Get_LineCaps,\                           ;: cdrOutlineLineCaps; safecall;
+  Set_LineCaps,\                           ;(pVal: cdrOutlineLineCaps); safecall;
+  Get_LineJoin,\                           ;: cdrOutlineLineJoin; safecall;
+  Set_LineJoin,\                           ;(pVal: cdrOutlineLineJoin); safecall;
+  Get_ScaleWithShape,\                     ;: WordBool; safecall;
+  Set_ScaleWithShape,\                     ;(pVal: WordBool); safecall;
+  SetProperties,\                          ;(Width: Double; const Style: IVGOutlineStyle; const Color: IVGColor; const StartArrow: IVGArrowHead; const EndArrow: IVGArrowHead; BehindFill: cdrTriState; ScaleWithShape: cdrTriState; LineCaps: cdrOutlineLineCaps; LineJoin: cdrOutlineLineJoin; NibAngle: Double; NibStretch: Integer; DashDotLength: Double; PenWidth: Double; MiterLimit: Double); safecall;
+  Get_Size,\                               ;: Double; safecall;
+  Set_Size,\                               ;(pVal: Double); safecall;
+  GetCopy,\                                ;: IVGOutline; safecall;
+  CopyAssign,\                             ;(const SourceOutline: IVGOutline); safecall;
+  UserAssign,\                             ;(ParentWindowHandle: Integer): WordBool; safecall;
+  Get_PSScreen,\                           ;: IVGPSScreenOptions; safecall;
+  CompareWith,\                            ;(const Outline: IVGOutline): WordBool; safecall;
+  Get_DashDotLength,\                      ;: Double; safecall;
+  Set_DashDotLength,\                      ;(pVal: Double); safecall;
+  ToString,\                               ;: WideString; safecall;
+  StringAssign,\                           ;(const OutlineString: WideString): WordBool; safecall;
+  Get_PenWidth,\                           ;: Double; safecall;
+  Set_PenWidth,\                           ;(pVal: Double); safecall;
+  Get_MiterLimit,\                         ;: Double; safecall;
+  Set_MiterLimit,\                         ;(pVal: Double); safecall;
+  SetNoOutline,\                           ; safecall;
+  Get_StartArrowOptions,\                  ;: IVGArrowHeadOptions; safecall;
+  Set_StartArrowOptions,\                  ;(const ppVal: IVGArrowHeadOptions); safecall;
+  Get_EndArrowOptions,\                    ;: IVGArrowHeadOptions; safecall;
+  Set_EndArrowOptions,\                    ;(const ppVal: IVGArrowHeadOptions); safecall;
+  Get_Justification,\                      ;: cdrOutlineJustification; safecall;
+  Set_Justification,\                      ;(pVal: cdrOutlineJustification); safecall;
+  SetPropertiesEx                          ;(Width: Double; const Style: IVGOutlineStyle; const Color: IVGColor; const StartArrow: IVGArrowHead; const EndArrow: IVGArrowHead; BehindFill: cdrTriState; ScaleWithShape: cdrTriState; LineCaps: cdrOutlineLineCaps; LineJoin: cdrOutlineLineJoin; NibAngle: Double; NibStretch: Integer; DashDotLength: Double; PenWidth: Double; MiterLimit: Double; Justification: cdrOutlineJustification); safecall;
+
 interface ICUICommandBars,\
   QueryInterface,\
   AddRef,\
@@ -1248,7 +1575,47 @@ interface ICUIDataSourceProxy,\
   GetProperty,\            ;(const PropertyName: WideString): OleVariant; safecall;
   SetProperty              ;(const PropertyName: WideString; Value: OleVariant); safecall;
 
-;                      dd 72
-;cdrCmdCategoryMacros  du '2cc24a3e-fe24-4708-9a74-9c75406eebcd',0
-                      dd 72
-cdrCmdCategoryPlugins du 'ab489730-8791-45d2-a825-b78bbe0d6a5d',0
+interface IVGProperties,\
+  QueryInterface,\
+  AddRef,\
+  Release,\
+  GetTypeInfoCount,\
+  GetTypeInfo,\
+  GetIDsOfNames,\
+  Invoke,\
+  Get_Item,\               ;(const Name: WideString; ID: Integer; data: pOleVariant): dword; stdcall;
+  Set_Item,\               ;(const Name: WideString; ID: Integer; pVal: OleVariant); stdcall;
+  Get_NewEnum,\            ;: IUnknown; safecall;
+  Get_Index,\              ;(const Name: WideString; ID: Integer): Integer; safecall;
+  Get_ItemByIndex,\        ;(Index: Integer): OleVariant; safecall;
+  Delete,\                 ;(const Name: WideString; ID: Integer); safecall;
+  DeleteByIndex,\          ;(Index: Integer); safecall;
+  Get_Count,\              ;: Integer; safecall;
+  Description,\            ;(Index: Integer; out Name: WideString; out ID: Integer); safecall;
+  PutFile,\                ;(const Name: WideString; ID: Integer; const FileName: WideString); safecall;
+  GetFile,\                ;(const Name: WideString; ID: Integer; const FileName: WideString); safecall;
+  Exists,\                 ;(const Name: WideString; ID: Integer): WordBool; safecall;
+  DeleteAll,\              ;(const Name: WideString): WordBool; safecall;
+  GetPoint,\               ;(const uuidName: WideString): IVGPoint; safecall;
+  SetPoint,\               ;(const uuidName: WideString; const pVal: IVGPoint); safecall;
+  GetVector,\              ;(const uuidName: WideString): IVGVector; safecall;
+  SetVector,\              ;(const uuidName: WideString; const pVal: IVGVector); safecall;
+  GetCurve,\               ;(const uuidName: WideString): IVGCurve; safecall;
+  SetCurve                 ;(const uuidName: WideString; const pVal: IVGCurve); safecall;
+
+struc OLEstr s
+{
+  dd .end-$-2
+  . du s,0
+  .end = $
+}
+
+if used cdrCmdCategoryMacros
+  cdrCmdCategoryMacros OLEstr '2cc24a3e-fe24-4708-9a74-9c75406eebcd'
+end if
+if used cdrCmdCategoryPlugins
+  cdrCmdCategoryPlugins OLEstr 'ab489730-8791-45d2-a825-b78bbe0d6a5d'
+end if
+if used IID_ICUIApplication
+  IID_ICUIApplication db 00ah,000h,0eeh,09ch,0a0h,042h,080h,059h,043h,0a3h,07ah,0a7h,014h,061h,048h,02ch
+end if
